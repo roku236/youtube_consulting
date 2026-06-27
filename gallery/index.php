@@ -1,3 +1,9 @@
+<?php
+require_once __DIR__ . '/db.php';
+
+$pdo = get_db();
+$thumbnails = $pdo->query('SELECT * FROM thumbnails ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -45,9 +51,12 @@
 
   <footer class="g-footer">
     <p>© 2026 THUMB GALLERY — サムネイルデザインの参考サイト</p>
+    <p><a href="../admin/">管理画面</a></p>
   </footer>
 
-  <script src="data.js"></script>
+  <script>
+    const THUMBNAILS = <?php echo json_encode($thumbnails, JSON_UNESCAPED_UNICODE); ?>;
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
