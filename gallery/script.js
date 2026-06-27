@@ -14,24 +14,21 @@ const state = { genre: null, color: null };
 const genres = [...new Set(THUMBNAILS.map((t) => t.genre))];
 const colors = [...new Set(THUMBNAILS.map((t) => t.color))];
 
-const genreChips = document.getElementById("genreChips");
-const colorChips = document.getElementById("colorChips");
+const genreList = document.getElementById("genreList");
+const colorList = document.getElementById("colorList");
 const grid = document.getElementById("thumbGrid");
 const resultCount = document.getElementById("resultCount");
 const emptyState = document.getElementById("emptyState");
 
-function renderChips() {
-  genreChips.innerHTML = genres
-    .map(
-      (g) =>
-        `<button class="g-chip" data-genre="${g}">${g}</button>`
-    )
+function renderLists() {
+  genreList.innerHTML = genres
+    .map((g) => `<li><button data-genre="${g}">${g}</button></li>`)
     .join("");
 
-  colorChips.innerHTML = colors
+  colorList.innerHTML = colors
     .map(
       (c) =>
-        `<button class="g-chip" data-color="${c}"><span class="g-chip__swatch bg-${c}"></span>${COLOR_LABELS[c] || c}</button>`
+        `<li><button data-color="${c}"><span class="g-swatch bg-${c}"></span>${COLOR_LABELS[c] || c}</button></li>`
     )
     .join("");
 }
@@ -63,38 +60,38 @@ function renderGrid() {
     .join("");
 }
 
-function syncChipState() {
-  genreChips.querySelectorAll(".g-chip").forEach((chip) => {
-    chip.classList.toggle("is-active", chip.dataset.genre === state.genre);
+function syncListState() {
+  genreList.querySelectorAll("button").forEach((btn) => {
+    btn.classList.toggle("is-active", btn.dataset.genre === state.genre);
   });
-  colorChips.querySelectorAll(".g-chip").forEach((chip) => {
-    chip.classList.toggle("is-active", chip.dataset.color === state.color);
+  colorList.querySelectorAll("button").forEach((btn) => {
+    btn.classList.toggle("is-active", btn.dataset.color === state.color);
   });
 }
 
-genreChips.addEventListener("click", (e) => {
-  const chip = e.target.closest(".g-chip");
-  if (!chip) return;
-  state.genre = state.genre === chip.dataset.genre ? null : chip.dataset.genre;
-  syncChipState();
+genreList.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+  state.genre = state.genre === btn.dataset.genre ? null : btn.dataset.genre;
+  syncListState();
   renderGrid();
 });
 
-colorChips.addEventListener("click", (e) => {
-  const chip = e.target.closest(".g-chip");
-  if (!chip) return;
-  state.color = state.color === chip.dataset.color ? null : chip.dataset.color;
-  syncChipState();
+colorList.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+  state.color = state.color === btn.dataset.color ? null : btn.dataset.color;
+  syncListState();
   renderGrid();
 });
 
 document.getElementById("resetFilters").addEventListener("click", () => {
   state.genre = null;
   state.color = null;
-  syncChipState();
+  syncListState();
   renderGrid();
 });
 
-renderChips();
-syncChipState();
+renderLists();
+syncListState();
 renderGrid();
