@@ -98,6 +98,13 @@ def build_payload(args: argparse.Namespace) -> dict:
             "role": "last_frame",
         })
 
+    for ref in args.image_ref or []:
+        content.append({
+            "type": "image_url",
+            "image_url": {"url": image_to_url(ref)},
+            "role": "reference_image",
+        })
+
     payload: dict = {"model": args.model, "content": content}
     # 指定されたパラメータだけ送る (未指定ならモデルのデフォルト)
     optional = {
@@ -166,6 +173,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--model", default=MODEL, help=f"モデルID (既定: {MODEL})")
     p.add_argument("--image", help="最初のフレーム画像 (URL またはローカルパス)")
     p.add_argument("--last-image", help="最後のフレーム画像 (URL またはローカルパス)")
+    p.add_argument("--image-ref", action="append",
+                   help="参考画像 (URL またはローカルパス)。複数回指定可")
     p.add_argument("--ratio", help="アスペクト比 例: 16:9, 9:16, 1:1, adaptive")
     p.add_argument("--duration", type=int, help="動画の秒数 例: 5, 10")
     p.add_argument("--resolution", help="解像度 例: 480p, 720p, 1080p")
